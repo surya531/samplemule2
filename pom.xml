@@ -36,10 +36,10 @@
       <username>agastya2021</username>
       <password>Sudha@1991</password>
       <applicationName>agastya2021</applicationName>
-      <environment>dev</environment>
-      <region>us-east-1</region>
+      <environment>SANDBOX</environment>
+      <region>US-East</region>
       <workers>1</workers>
-      <workerType>MICRO</workerType>
+      <workerType>0.1 vCores</workerType>
       <properties>
         <key>value</key>
       </properties>
