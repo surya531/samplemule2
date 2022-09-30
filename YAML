@@ -1,0 +1,44 @@
+# Variable Group 'Mule Config Variable' was defined in the Variables tab
+variables:
+- name: BuildParameters.mavenPOMFile
+  value: pom.xml
+trigger:
+  branches:
+    include:
+    - refs/heads/dev
+name: $(date:yyyyMMdd)$(rev:.r)
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/dev
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: self
+    clean: true
+    fetchTags: false
+  - task: Maven@3
+    displayName: Maven pom.xml
+    inputs:
+      mavenPOMFile: $(BuildParameters.mavenPOMFile)
+      goals: clean package
+      options: -DskipMunitTests -DattachMuleSources
+  - task: DownloadSecureFile@1
+    name: securityFIle
+    displayName: Download secure file
+    inputs:
+      secureFile: ff7ada31-94d0-4c12-aace-0430ac900f3f
+  - task: PublishPipelineArtifact@1
+    displayName: Build Mulesoft artifacts
+    inputs:
+      artifactName: Mulesoft API artifacts
+  - task: Maven@3
+    displayName: Munits
+    inputs:
+      goals: 'clean test -s $(securityFIle.secureFilePath) '
+      options: -Denv=$(env) -DskipMunits
+...
